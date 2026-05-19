@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.oscar.todo_rest.dto.EditTaskCommand;
+import com.oscar.todo_rest.enums.enumPrio;
+import com.oscar.todo_rest.enums.enumStat;
 import com.oscar.todo_rest.error.TaskNotFoundException;
 import com.oscar.todo_rest.model.Category;
 import com.oscar.todo_rest.model.Tag;
@@ -71,7 +73,6 @@ public class TaskService {
                 .deadline(cmd.deadline())
                 .author(author)
                 .category(category)
-                // ASIGNAMOS LA NUEVA LISTA DE TAGS A LA TAREA
                 .tags(tags)
                 .updatedAt(LocalDateTime.now())
                 .build()
@@ -108,7 +109,7 @@ public class TaskService {
         taskRepository.deleteById(id);
     }   
 
-    // BUSCAR POR TAG -- ME INVENTO EXCEPCIONES PORQUE NO TENGO HECHAS COMO EN OTROS CASOS
+    // BUSCAR POR TAG
     public List<Task> findByTag(String nameTag) {
         Tag tag= tagRepository.findByName(nameTag).orElseThrow(()-> new RuntimeException( "Tag not found"));
 
@@ -122,7 +123,7 @@ public class TaskService {
         }
     }
 
-    // BUSCAR POR CATEGORIA -- ME INVENTO EXCEPCIONES PORQUE NO TENGO HECHAS COMO EN OTROS CASOS
+    // BUSCAR POR CATEGORIA 
     public List <Task> findByCategory(String categoryName){
         Category cat= categoryRepository.findByName(categoryName).orElseThrow(()-> new RuntimeException( "Category not found"));
         
@@ -162,5 +163,48 @@ public class TaskService {
         task.getTags().remove(tag);
 
         return taskRepository.save(task);
+    }
+
+    // BUSCA TITULO QUE CONTENGA
+    public List<Task> findByTitleContaining(String title) {
+        List<Task> result = taskRepository.findByTitleContainingIgnoreCase(title);
+        if (result.isEmpty()) {
+            throw new RuntimeException("Not task found with this title");
+        }
+        return result;
+    }
+
+    // FILTRA POR ESTADO
+    public List<Task> findByStatus(enumStat status) {
+        List<Task> result = taskRepository.findByStatus(status);
+        if (result.isEmpty()) {
+            throw new RuntimeException("Not task found with this status");
+        }
+        return result;
+    }
+
+    //---------------NUEVO-------------------
+    // NUEVO: Conecta con el repositorio para filtrar por la prioridad (enumPrio)
+    public List<Task> findByPriority(enumPrio priority) {
+        List<Task> result = taskRepository.findByPriority(priority);
+        if (result.isEmpty()) {
+            throw new RuntimeException("Not task found with this priority");
+        }
+        return result;
+    }
+
+    // NUEVO: CALCULA LAS ESTADÍSTICAS PARA EL DASHBOARD DEL USUARIO
+    public com.oscar.todo_rest.dto.DashboardResponse getDashboardStats(User author) {
+        List<Task> userTasks = taskRepository.findByAuthor(author);
+        
+        long total = userTasks.size();
+        
+        long pending = userTasks.stream().filter(t -> t.getStatus() == com.oscar.todo_rest.enums.enumStat.PENDIENTE).count();
+        long process = userTasks.stream().filter(t -> t.getStatus() == com.oscar.todo_rest.enums.enumStat.EN_PROCESO).count();
+        long completed = userTasks.stream().filter(t -> t.getStatus() == com.oscar.todo_rest.enums.enumStat.HECHO).count();
+        long passed = userTasks.stream().filter(t -> t.getStatus() == com.oscar.todo_rest.enums.enumStat.NO_HECHO).count();
+
+        
+        return new com.oscar.todo_rest.dto.DashboardResponse(total, pending, completed,process,passed);
     }
 }

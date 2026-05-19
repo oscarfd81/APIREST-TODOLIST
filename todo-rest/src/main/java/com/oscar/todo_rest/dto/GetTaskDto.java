@@ -1,5 +1,6 @@
 package com.oscar.todo_rest.dto;
 
+import com.oscar.todo_rest.enums.enumPrio;
 import com.oscar.todo_rest.enums.enumStat;
 import com.oscar.todo_rest.model.Task;
 import com.oscar.todo_rest.model.Tag;
@@ -15,6 +16,7 @@ public record GetTaskDto(
         String title,
         String description,
         enumStat status,
+        enumPrio priority,
         LocalDateTime createdAt,
         LocalDateTime deadline,
         NewUserResponse author,
@@ -41,6 +43,7 @@ public record GetTaskDto(
                 t.getTitle(),
                 t.getDescription(),
                 t.getStatus(),
+                t.getPriority(),
                 t.getCreatedAt(),
                 t.getDeadline(),
                 NewUserResponse.of(t.getAuthor()),

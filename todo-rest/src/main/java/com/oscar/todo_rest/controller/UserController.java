@@ -11,7 +11,7 @@ import com.oscar.todo_rest.dto.NewUserCommand;
 import com.oscar.todo_rest.dto.NewUserResponse;
 import com.oscar.todo_rest.dto.GetUserDTO;
 import com.oscar.todo_rest.dto.UpdatePasswordCommand;
-import com.oscar.todo_rest.model.User; // ASEGURATE DE QUE TU MODELO USER SE LLAME ASÍ Y ESTÉ EN ESTA RUTA
+import com.oscar.todo_rest.model.User; 
 import com.oscar.todo_rest.service.UserService;
 
 import java.util.List;
@@ -40,6 +40,17 @@ public class UserController {
         return ResponseEntity.noContent().build(); 
     }
 
+    // MODIFICAR EL PERFIL DEL USUARIO AUTENTICADO 
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
+    @PutMapping("/user/profile")
+    public ResponseEntity<NewUserResponse> updateProfile(
+            @AuthenticationPrincipal User user,
+            @RequestBody NewUserCommand cmd) {
+        user.setUsername(cmd.username());
+        user.setEmail(cmd.email());
+        return ResponseEntity.ok(NewUserResponse.of(userService.changePassword(user, user.getPassword())));
+    }
+
     // SOLO PARA ADMIN
     // LISTAR TODOS LOS USUARIOS DEL SISTEMA
     @PreAuthorize("hasRole('ADMIN')")
@@ -58,5 +69,19 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // PROMOCIONAR UN USUARIO A ROL GESTOR (REQUISITO SECCIÓN 3a DEL ENUNCIADO)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/users/{id}/promote")
+    public ResponseEntity<GetUserDTO> promoteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(GetUserDTO.of(userService.promoteToGestor(id)));
+    }
+
+    // DEGRADAR UN GESTOR A ROL USUARIO NORMAL (REQUISITO SECCIÓN 3a DEL ENUNCIADO)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/users/{id}/demote")
+    public ResponseEntity<GetUserDTO> demoteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(GetUserDTO.of(userService.demoteToUser(id)));
     }
 }

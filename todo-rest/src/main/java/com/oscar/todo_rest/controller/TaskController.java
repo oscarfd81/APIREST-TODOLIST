@@ -14,6 +14,8 @@ import com.oscar.todo_rest.dto.EditTaskCommand;
 import com.oscar.todo_rest.dto.GetTaskDto;
 import com.oscar.todo_rest.model.Task;
 import com.oscar.todo_rest.model.User;
+import com.oscar.todo_rest.enums.enumStat;
+import com.oscar.todo_rest.enums.enumPrio;
 
 import java.util.List;
 
@@ -77,17 +79,50 @@ public class TaskController {
     }
 
     // ASIGNAR UN TAG A TASK
+    // NUEVO: Ruta adaptada a POST /task/{id}/tags según pide la lista de cotejo
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
-    @PutMapping("/{id}/tag")
+    @PostMapping("/{id}/tags")
     public GetTaskDto assignTag(@PathVariable Long id, @RequestParam String tagName) {
         return GetTaskDto.of(taskService.assignTagToTask(id, tagName));
     }
 
     // ELIMINAR TAG DE UN TASK
-    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
-    @PutMapping("/{id}/tag/remove")
     // LE PASAMOS TAMBIÉN EL TAGNAME POR REQUESTPARAM PARA SABER CUÁL DE LAS ETIQUETAS QUEREMOS QUITAR DE LA LISTA
+    // NUEVO: Cambiado a DELETE /task/{id}/tags y usa la lógica del servicio extrayendo el nombre
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
+    @DeleteMapping("/{id}/tags")
     public GetTaskDto removeTag(@PathVariable Long id, @RequestParam String tagName) {
         return GetTaskDto.of(taskService.removeTagFromTask(id, tagName));
+    }
+
+    // FILTRAR POR TITULO ESTADO O PRIORIDAD (Search?)
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
+    @GetMapping("/search")
+    public List<GetTaskDto> searchTasks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) enumStat status,
+            @RequestParam(required = false) enumPrio priority) {
+        
+            List<Task> tasks;
+        
+            if (title != null) {
+                tasks = taskService.findByTitleContaining(title);
+            } else if (status != null) {
+                tasks = taskService.findByStatus(status);
+            } else if (priority != null) {
+                tasks = taskService.findByPriority(priority); 
+            } else {
+                tasks = taskService.findAll();
+            }
+
+            return tasks.stream().map(GetTaskDto::of).toList();
+    }
+
+    // ENDPOINT PARA LAS ESTADÍSTICAS DEL USUARIO
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
+    @GetMapping("/dashboard")
+    public ResponseEntity<com.oscar.todo_rest.dto.DashboardResponse> 
+        getDashboard(@AuthenticationPrincipal User author) {
+        return ResponseEntity.ok(taskService.getDashboardStats(author));
     }
 }
