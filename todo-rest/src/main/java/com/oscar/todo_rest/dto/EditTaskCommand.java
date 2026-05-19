@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oscar.todo_rest.enums.enumStat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record EditTaskCommand(
     String title,
@@ -14,5 +15,5 @@ public record EditTaskCommand(
     LocalDateTime deadline,
     String categoryName,
     String statusName,
-    String tagName
+    List<String> tagNames
 ){}
