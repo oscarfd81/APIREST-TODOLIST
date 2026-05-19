@@ -18,7 +18,7 @@ public record GetTaskDto(
         LocalDateTime deadline,
         NewUserResponse author,
         String category,  
-        // NUEVO: AL SER RELACION MANYTO MANY AHORA DEVUELVE UNA LISTA DE STRINGS CON LOS NOMBRES DE LOS TAGS
+        // AL SER RELACION MANYTO MANY DEVUELVE UNA LISTA DE STRINGS CON LOS NOMBRES DE LOS TAGS
         List<String> tags,
         // IMPORTANT EN TAREA ES BOOLEAN PERO AQUÍ DEVUELVE UNA PALABRA (SI/NO), POR LO QUE LO DECLARAMOS COMO STRING
         String important,
@@ -30,7 +30,7 @@ public record GetTaskDto(
         // HAYAMOS DURACIÓN ENTRE AHORA Y LA FECHA LIMITE Y LA ACTUAL
         long daysBet= Duration.between(LocalDateTime.now(), t.getDeadline()).toDays();
 
-        // NUEVO: RECORREMOS LA LISTA DE TAGS DE LA TAREA PARA SACAR SOLO SUS NOMBRES Y PASARLOS AL DTO
+        // RECORREMOS LA LISTA DE TAGS DE LA TAREA PARA SACAR SOLO SUS NOMBRES Y PASARLOS AL DTO
         List<String> nombresTags = t.getTags() != null 
                 ? t.getTags().stream().map(Tag::getName).toList() 
                 : List.of();
@@ -44,7 +44,7 @@ public record GetTaskDto(
                 t.getDeadline(),
                 NewUserResponse.of(t.getAuthor()),
                 t.getCategory() != null ? t.getCategory().getName() : "VACIO",
-                // NUEVO: LE PASAMOS LA NUEVA LISTA CON LOS NOMBRES DE LAS ETIQUETAS
+                // LE PASAMOS LA NUEVA LISTA CON LOS NOMBRES DE LAS ETIQUETAS
                 nombresTags,
                 t.isImportant()? "SI":"NO",
                 daysBet

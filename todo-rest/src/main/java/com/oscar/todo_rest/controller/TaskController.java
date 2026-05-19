@@ -104,7 +104,7 @@ public class TaskController {
     // ELIMINAR TAG DE UN TASK
     @PreAuthorize("hasAnyRole('USER')")
     @PutMapping("/{id}/tag/remove")
-    // NUEVO: LE PASAMOS TAMBIÉN EL TAGNAME POR REQUESTPARAM PARA SABER CUÁL DE LAS ETIQUETAS QUEREMOS QUITAR DE LA LISTA
+    // LE PASAMOS TAMBIÉN EL TAGNAME POR REQUESTPARAM PARA SABER CUÁL DE LAS ETIQUETAS QUEREMOS QUITAR DE LA LISTA
     public Task removeTag(@PathVariable Long id, @RequestParam String tagName) {
         return taskService.removeTagFromTask(id, tagName);
     }
