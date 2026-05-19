@@ -1,6 +1,7 @@
 package com.oscar.todo_rest.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.oscar.todo_rest.enums.enumPrio;
 import com.oscar.todo_rest.enums.enumStat;
@@ -12,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
@@ -47,16 +49,14 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private enumPrio priority;
 
-    
-
     @ManyToOne
     private User author;
 
     @ManyToOne
     private Category category;
 
-    @ManyToOne
-    private Tag tag;
+    @ManyToMany
+    private List<Tag> tags;
 
 }
 

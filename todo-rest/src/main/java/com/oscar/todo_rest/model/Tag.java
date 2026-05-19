@@ -21,7 +21,7 @@ public class Tag {
 
     private String name;
 
-    @OneToMany(mappedBy = "tag")
+    @ManyToMany(mappedBy = "tags")
     @JsonIgnore
     private List<Task> tasks;
 }
