@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 import org.springframework.stereotype.Service;
 
 import com.oscar.todo_rest.dto.EditTaskCommand;
@@ -57,8 +58,11 @@ public class TaskService {
         Category category = categoryRepository.findByName(cmd.categoryName())
                 .orElseThrow();
 
-        Tag tag= tagRepository.findByName(cmd.tagName())
-                .orElseThrow();
+        // NUEVO: BUSCAMOS LA LISTA DE TAGS COMPLETA QUE VIENE DESDE EL DTO
+        List<Tag> tags = cmd.tagNames().stream()
+                .map(name -> tagRepository.findByName(name)
+                        .orElseThrow(() -> new RuntimeException("Tag no encontrado: " + name)))
+                .toList();
 
         return taskRepository.save(
             Task.builder()
@@ -67,7 +71,8 @@ public class TaskService {
                 .deadline(cmd.deadline())
                 .author(author)
                 .category(category)
-                .tag(tag)
+                // NUEVO: ASIGNAMOS LA NUEVA LISTA DE TAGS A LA TAREA
+                .tags(tags)
                 .updatedAt(LocalDateTime.now())
                 .build()
         );
@@ -79,15 +84,19 @@ public class TaskService {
             Category category = categoryRepository.findByName(cmd.categoryName())
                 .orElseThrow();
 
-            Tag tag= tagRepository.findByName(cmd.tagName())
-                    .orElseThrow();
+            // NUEVO: BUSCAMOS LA NUEVA LISTA DE TAGS PARA REEMPLAZAR LA ANTERIOR EN LA EDICION
+            List<Tag> tags = cmd.tagNames().stream()
+                .map(name -> tagRepository.findByName(name)
+                        .orElseThrow(() -> new RuntimeException("Tag no encontrado: " + name)))
+                .toList();
 
             t.setTitle(cmd.title());
             t.setDescription(cmd.description());
             t.setDeadline(cmd.deadline());
             t.setUpdatedAt(LocalDateTime.now());
             t.setCategory(category);
-            t.setTag(tag);
+            // NUEVO: ACTUALIZAMOS LA LISTA DE TAGS DE LA TAREA
+            t.setTags(tags);
 
             return taskRepository.save(t);
 
@@ -103,7 +112,8 @@ public class TaskService {
     public List<Task> findByTag(String nameTag) {
         Tag tag= tagRepository.findByName(nameTag).orElseThrow(()-> new RuntimeException( "Tag not found"));
 
-        List <Task> listTask = taskRepository.findByTag(tag);
+        // NUEVO: USAMOS EL METODO CONTAINS DEL REPOSITORIO PARA BUSCAR DENTRO DE LA LISTA DE LA TABLA INTERMEDIA
+        List <Task> listTask = taskRepository.findByTagsContains(tag);
 
         if (listTask.isEmpty()) {
             throw new RuntimeException("Tasks with these TagName not found");
@@ -133,17 +143,23 @@ public class TaskService {
         Tag tag = tagRepository.findByName(tagName)
                 .orElseThrow(() -> new RuntimeException("Tag not found"));
 
-        task.setTag(tag);
+        // NUEVO: EN LUGAR DE REEMPLAZAR, AÑADIMOS EL NUEVO TAG A LA LISTA QUE YA TIENE LA TAREA
+        task.getTags().add(tag);
 
         return taskRepository.save(task);
     }
 
-    // METODO PARA ASIGNAR TAG A UNA TAREA
-    public Task removeTagFromTask(Long taskId) {
+    // METODO PARA ELIMINAR TAG DE UN TASK
+    // NUEVO: PASAMOS EL TAGNAME PARA SABER EXACTAMENTE QUE TAG QUEREMOS QUITAR DE LA LISTA
+    public Task removeTagFromTask(Long taskId, String tagName) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
-            task.setTag(null);
+        Tag tag = tagRepository.findByName(tagName)
+                .orElseThrow(() -> new RuntimeException("Tag not found"));
+
+        // NUEVO: ELIMINAMOS SOLO EL TAG SELECCIONADO DE LA LISTA DE LA TAREA
+        task.getTags().remove(tag);
 
         return taskRepository.save(task);
     }
