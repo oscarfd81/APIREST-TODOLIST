@@ -7,6 +7,7 @@ import com.oscar.todo_rest.enums.enumStat;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// DTO DE ENTRADA: SIRVE PARA EDITAR TAREA
 public record EditTaskCommand(
     String title,
     String description,

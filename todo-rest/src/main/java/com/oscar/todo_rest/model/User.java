@@ -1,4 +1,4 @@
-package com.oscar.todo_rest.users;
+package com.oscar.todo_rest.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

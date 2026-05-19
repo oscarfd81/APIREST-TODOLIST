@@ -1,8 +1,13 @@
-package com.oscar.todo_rest.users;
+package com.oscar.todo_rest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.oscar.todo_rest.dto.NewUserCommand;
+import com.oscar.todo_rest.model.User;
+import com.oscar.todo_rest.repos.UserRepository;
+
 import java.util.List;
 
 @Service

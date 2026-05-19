@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.oscar.todo_rest.enums.enumPrio;
 import com.oscar.todo_rest.enums.enumStat;
-import com.oscar.todo_rest.users.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

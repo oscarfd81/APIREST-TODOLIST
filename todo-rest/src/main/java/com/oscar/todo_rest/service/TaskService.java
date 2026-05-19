@@ -13,10 +13,10 @@ import com.oscar.todo_rest.error.TaskNotFoundException;
 import com.oscar.todo_rest.model.Category;
 import com.oscar.todo_rest.model.Tag;
 import com.oscar.todo_rest.model.Task;
+import com.oscar.todo_rest.model.User;
 import com.oscar.todo_rest.repos.CategoryRepository;
 import com.oscar.todo_rest.repos.TagRepository;
 import com.oscar.todo_rest.repos.TaskRepository;
-import com.oscar.todo_rest.users.User;
 
 @Service
 @RequiredArgsConstructor

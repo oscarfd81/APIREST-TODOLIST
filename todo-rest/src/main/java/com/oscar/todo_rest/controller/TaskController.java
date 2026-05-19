@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.oscar.todo_rest.service.TaskService;
-import com.oscar.todo_rest.users.User;
 
 import lombok.RequiredArgsConstructor;
 
 import com.oscar.todo_rest.dto.EditTaskCommand;
 import com.oscar.todo_rest.dto.GetTaskDto;
 import com.oscar.todo_rest.model.Task;
+import com.oscar.todo_rest.model.User;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;

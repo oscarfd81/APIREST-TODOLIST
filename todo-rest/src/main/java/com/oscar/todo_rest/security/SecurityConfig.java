@@ -14,35 +14,41 @@ import com.oscar.todo_rest.error.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableMethodSecurity
-@EnableWebSecurity
+@EnableMethodSecurity // ACTIVA EL USO DE @PREAUTHORIZE EN LOS CONTROLADORES PARA PROTEGER ENDPOINTS POR ROL
+@EnableWebSecurity    // ACTIVA LA SEGURIDAD WEB DE SPRING EN TODA LA APLICACION
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    // MANEJADORES DE ERRORES PERSONALIZADOS (LOS QUE DEVUELVEN EL JSON BONITO CUANDO ALGO FALLA)
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-
-    // Gracias a BEAN, permite que el usuario autorizado pueda acceder, y que el usuario no autorizado no pueda 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-       http.cors(Customizer.withDefaults()) 
-            .httpBasic(Customizer.withDefaults())
+        http.cors(Customizer.withDefaults()) 
+            
+            .httpBasic(Customizer.withDefaults()) // ACTIVA LA AUTENTICACION BASICA (MANDAR USUARIO Y CONTRASEÑA EN LA CABECERA)
+            
+            // CONFIGURACION DE ERRORES DE SEGURIDAD
             .exceptionHandling(excep -> {
                 excep.authenticationEntryPoint(customAuthenticationEntryPoint);
                 excep.accessDeniedHandler(customAccessDeniedHandler);
             })
+            
+            // REGLAS DE ACCESO A LAS URLS (EL FILTRO PRINCIPAL)
             .authorizeHttpRequests(auth -> auth
+                // LA URL DE REGISTRARSE ES LIBRE, CUALQUIERA PUEDE ENTRAR SIN LOGUEARSE
                 .requestMatchers("/auth/register").permitAll()
+                // CUALQUIER OTRA RUTA DE LA API EXIGE ESTAR AUTENTICADO DE FORMA OBLIGATORIA
                 .anyRequest().authenticated()
             );
 
         http.csrf(csrf -> csrf.disable());
+        
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
-
-        return http.build();
+        return http.build(); 
+        // CONSTRUYE Y ACTIVA TODOESTE BLOQUE DE SEGURIDAD
     }
-
 }

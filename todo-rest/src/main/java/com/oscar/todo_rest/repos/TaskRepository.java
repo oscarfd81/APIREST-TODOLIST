@@ -2,9 +2,10 @@ package com.oscar.todo_rest.repos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.oscar.todo_rest.model.Task;
+import com.oscar.todo_rest.model.User;
 import com.oscar.todo_rest.model.Tag;
 import com.oscar.todo_rest.model.Category;
-import com.oscar.todo_rest.users.User;
+
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {

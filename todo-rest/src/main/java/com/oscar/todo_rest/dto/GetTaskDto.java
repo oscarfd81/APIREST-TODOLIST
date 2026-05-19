@@ -3,12 +3,13 @@ package com.oscar.todo_rest.dto;
 import com.oscar.todo_rest.enums.enumStat;
 import com.oscar.todo_rest.model.Task;
 import com.oscar.todo_rest.model.Tag;
-import com.oscar.todo_rest.users.NewUserResponse;
+
 import java.time.Duration;
 import java.util.List;
 
 import java.time.LocalDateTime;
 
+// DTO DE SALIDA: DEVUELVE TODOS LOS DATOS DE UNA TAREA
 public record GetTaskDto(
         Long id,
         String title,
