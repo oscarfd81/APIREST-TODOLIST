@@ -43,14 +43,13 @@ public class CategoryController {
         categoryRepository.deleteById(id);
     }
     
-    // ---------------- NO ES FINAL ----------------
     @PreAuthorize("hasAnyRole('ADMIN', 'GESTOR')")
     @PutMapping("/{id}")
     public Category update(@PathVariable Long id, @RequestBody Category categoryDetails) {
-
         return categoryRepository.findById(id)
                 .map(category -> {
-                    category.setName(categoryDetails.getName()); // ajusta campos si tienes más
+                    // SELECCIONA CATEGORIA Y CAMBIA EL NOMBRE ANTERIOR POR EL DE LOS DATOS AÑADIDOS
+                    category.setName(categoryDetails.getName()); 
                     return categoryRepository.save(category);
                 })
                 .orElseThrow(() -> new RuntimeException("Category not found"));

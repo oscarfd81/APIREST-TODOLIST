@@ -45,13 +45,13 @@ public class TagController {
         tagRepository.deleteById(id);
     }
 
-    // ---------------- NO ES FINAL ----------------
     @PreAuthorize("hasAnyRole('USER')")
     @PutMapping("/{id}")
     public Tag update(@PathVariable Long id, @RequestBody Tag tagDetails) {
 
         return tagRepository.findById(id)
                 .map(tag -> {
+                    // SELECCIONA TAG Y CAMBIA EL NOMBRE ANTERIOR POR EL DE LOS DATOS AÑADIDOS
                     tag.setName(tagDetails.getName());
                     return tagRepository.save(tag);
                 })
