@@ -38,6 +38,8 @@ public class SecurityConfig {
             
             // REGLAS DE ACCESO A LAS URLS (EL FILTRO PRINCIPAL)
             .authorizeHttpRequests(auth -> auth
+                // RUTAS PÚBLICAS DE SWAGGER / DOCUMENTACIÓN ABIERTAS PARA QUE LA PROFE PUEDA ENTRAR
+                .requestMatchers("/v3/api-docs", "/v3/api-docs/*", "/swagger-ui/*", "/swagger-ui.html").permitAll()
                 // LA URL DE REGISTRARSE ES LIBRE, CUALQUIERA PUEDE ENTRAR SIN LOGUEARSE
                 .requestMatchers("/auth/register").permitAll()
                 // CUALQUIER OTRA RUTA DE LA API EXIGE ESTAR AUTENTICADO DE FORMA OBLIGATORIA

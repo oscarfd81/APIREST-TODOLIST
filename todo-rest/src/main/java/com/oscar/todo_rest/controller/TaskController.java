@@ -17,11 +17,16 @@ import com.oscar.todo_rest.model.User;
 import com.oscar.todo_rest.enums.enumStat;
 import com.oscar.todo_rest.enums.enumPrio;
 
+// IMPORTS SWAGGER
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/task")
 @RequiredArgsConstructor
+@Tag(name = "1. Gestión de Tareas", description = "Endpoints principales para crear, editar, eliminar y filtrar tareas de usuario")
 public class TaskController {
 
     private final TaskService taskService;
@@ -29,6 +34,7 @@ public class TaskController {
     // COMANDO HASANYROLE SIRVE PARA COMPROBAR SI EL USUARIO TIENE ESOS ROLES
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @GetMapping
+    @Operation(summary = "Listar todas las tareas")
     public List<GetTaskDto> getAll(@AuthenticationPrincipal User author) {
         return taskService.findByAuthor(author)
                 .stream()
@@ -40,12 +46,14 @@ public class TaskController {
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @PostAuthorize("returnObject.author.username == authentication.principal.username")
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener una tarea por ID")
     public Task getById(@PathVariable Long id) {
         return taskService.findById(id);
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
+    @Operation(summary = "Crear nueva tarea")
     public ResponseEntity<GetTaskDto> create(
         @RequestBody EditTaskCommand cmd,
         // Con esto recuperamos el autor registrado
@@ -56,6 +64,7 @@ public class TaskController {
     // Si el autor de la tarea coincide con el usuario autenticado, se permite la edición
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
     @PutMapping("/{id}")
+    @Operation(summary = "Editar una tarea")
     public GetTaskDto edit(@RequestBody EditTaskCommand cmd, @PathVariable Long id) {
         return GetTaskDto.of(taskService.edit(cmd, id));
     }   
@@ -63,6 +72,7 @@ public class TaskController {
     // Si el autor de la tarea coincide con el usuario autenticado, se permite la eliminación
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar una tarea")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         taskService.delete(id);
         return ResponseEntity.noContent().build();
@@ -71,6 +81,7 @@ public class TaskController {
     // DEVUELVE LISTA CON TASKS CON ESE TAGNAME
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @GetMapping("/tag/{tagName}")
+    @Operation(summary = "Buscar tareas por etiqueta")
     public List<GetTaskDto> getByTagName(@PathVariable String tagName) {
         return taskService.findByTag(tagName)
                 .stream()
@@ -82,6 +93,7 @@ public class TaskController {
     // NUEVO: Ruta adaptada a POST /task/{id}/tags según pide la lista de cotejo
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
     @PostMapping("/{id}/tags")
+    @Operation(summary = "Asignar etiqueta a tarea")
     public GetTaskDto assignTag(@PathVariable Long id, @RequestParam String tagName) {
         return GetTaskDto.of(taskService.assignTagToTask(id, tagName));
     }
@@ -91,6 +103,7 @@ public class TaskController {
     // NUEVO: Cambiado a DELETE /task/{id}/tags y usa la lógica del servicio extrayendo el nombre
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN') and @ownerCheck.check(#id, principal.id)")
     @DeleteMapping("/{id}/tags")
+    @Operation(summary = "Desasignar etiqueta de tarea")
     public GetTaskDto removeTag(@PathVariable Long id, @RequestParam String tagName) {
         return GetTaskDto.of(taskService.removeTagFromTask(id, tagName));
     }
@@ -98,6 +111,7 @@ public class TaskController {
     // FILTRAR POR TITULO ESTADO O PRIORIDAD (Search?)
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @GetMapping("/search")
+    @Operation(summary = "Buscador unificado y dinámico")
     public List<GetTaskDto> searchTasks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) enumStat status,
@@ -121,6 +135,7 @@ public class TaskController {
     // ENDPOINT PARA LAS ESTADÍSTICAS DEL USUARIO
     @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @GetMapping("/dashboard")
+    @Operation(summary = "Estadísticas del Dashboard")
     public ResponseEntity<com.oscar.todo_rest.dto.DashboardResponse> 
         getDashboard(@AuthenticationPrincipal User author) {
         return ResponseEntity.ok(taskService.getDashboardStats(author));
