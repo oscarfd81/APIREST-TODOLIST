@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.oscar.todo_rest.model.Tag;
 import com.oscar.todo_rest.repos.TagRepository;
 
-// IMPORTAMOS SOLO LA OPERACIÓN DE SWAGGER (EL DE ANOTACIONES.TAG LO QUITAMOS PARA QUE NO CHOQUE)
+// IMPORTAMOS SOLO LA OPERACIÓN DE SWAGGER (EL DE ANOTACIONES.TAG LO QUITAMOS PORQUE ME DABA ERROR)
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
