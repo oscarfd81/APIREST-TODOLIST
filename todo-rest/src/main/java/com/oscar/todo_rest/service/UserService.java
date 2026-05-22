@@ -23,7 +23,14 @@ public class UserService {
                 .email(cmd.email())
                 .password(passwordEncoder.encode(cmd.password()))
                 .isAdmin(false)
+                .isGestor(false)
+                .isUser(true)
                 .build();
+        return userRepository.save(user);
+    }
+
+    // NUEVO: METODO PARA GUARDAR LOS DATOS DE PERFIL MODIFICADOS DIRECTAMENTE
+    public User update(User user) {
         return userRepository.save(user);
     }
 

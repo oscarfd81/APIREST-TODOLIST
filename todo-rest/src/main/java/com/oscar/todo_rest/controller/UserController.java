@@ -56,7 +56,7 @@ public class UserController {
             @RequestBody NewUserCommand cmd) {
         user.setUsername(cmd.username());
         user.setEmail(cmd.email());
-        return ResponseEntity.ok(NewUserResponse.of(userService.changePassword(user, user.getPassword())));
+        return ResponseEntity.ok(NewUserResponse.of(userService.update(user)));
     }
 
     // SOLO PARA ADMIN

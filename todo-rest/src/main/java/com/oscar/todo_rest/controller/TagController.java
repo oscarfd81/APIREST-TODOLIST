@@ -33,28 +33,28 @@ public class TagController {
         this.tagRepository = tagRepository;
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @GetMapping
     @Operation(summary = "Listar todas las etiquetas")
     public List<Tag> getAll() {
         return tagRepository.findAll();
     }
     
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @PostMapping
     @Operation(summary = "Crear etiqueta")
     public Tag create(@RequestBody Tag tag) {
         return tagRepository.save(tag);
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar etiqueta")
     public void delete(@PathVariable Long id) {
         tagRepository.deleteById(id);
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'GESTOR', 'ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar etiqueta")
     public Tag update(@PathVariable Long id, @RequestBody Tag tagDetails) {
