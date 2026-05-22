@@ -1,7 +1,7 @@
 -- Usuarios
-INSERT INTO user_entity (id, email, username, password, is_admin, is_gestor, is_user) VALUES (1, 'admin@gmail.com', 'admin', '1234', true, false, false);
-INSERT INTO user_entity (id, email, username, password, is_admin, is_gestor, is_user) VALUES (2, 'gestor@gmail.com', 'gestor', '1234', false, true, false);
-INSERT INTO user_entity (id, email, username, password, is_admin, is_gestor, is_user) VALUES (3, 'user@gmail.com', 'user', '1234', false, false, true);
+INSERT INTO user_entity (id, email, username, password, is_admin, is_gestor, is_user) VALUES (1, 'admin@gmail.com', 'admin', '{noop}1234', true, false, false);
+INSERT INTO user_entity (id, email, username, password, is_admin, is_gestor, is_user) VALUES (2, 'gestor@gmail.com', 'gestor', '{noop}1234', false, true, false);
+INSERT INTO user_entity (id, email, username, password, is_admin, is_gestor, is_user) VALUES (3, 'user@gmail.com', 'user', '{noop}1234', false, false, true);
 
 -- Categorías
 INSERT INTO cat (id, name) VALUES (1, 'Trabajo');
