@@ -21,7 +21,7 @@ INSERT INTO tagd (id, name) VALUES (5, 'Examen');
 INSERT INTO tagd (id, name) VALUES (6, 'Tarea');
 INSERT INTO tagd (id, name) VALUES (7, 'Ver pelicula');
 
--- Tareas (asignadas directamente al usuario 3 mediante author_id)
+-- Tareas (asignadas directamente al usuario 3)
 INSERT INTO task (id, author_id, created_at, deadline, title, description, status, priority, important) VALUES (1, 3, CURRENT_TIMESTAMP, '2026-04-22 08:00:00', 'Ir al gimnasio', 'Rutina de pierna y 20 minutos de cardio', 'EN_PROCESO', 'MEDIA', true);
 INSERT INTO task (id, author_id, created_at, deadline, title, description, status, priority, important) VALUES (2, 3, CURRENT_TIMESTAMP, '2026-04-22 10:30:00', 'Estudiar Java Spring', 'Ver el módulo de persistencia de datos y JPA', 'PENDIENTE', 'ALTA', true);
 INSERT INTO task (id, author_id, created_at, deadline, title, description, status, priority, important) VALUES (3, 3, CURRENT_TIMESTAMP, '2026-04-22 14:00:00', 'Comprar comida', 'Ir al súper por pechuga de pollo, arroz y verduras', 'NO_HECHO', 'BAJA', false);
